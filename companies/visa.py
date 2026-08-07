@@ -14,6 +14,12 @@ TARGET_TITLES = [
     "sde"
 ]
 
+US_LOCATION_KEYWORDS = [
+    "US",
+    "United States",
+    "USA"
+]
+
 
 def is_matching_title(title):
     """
@@ -27,6 +33,20 @@ def is_matching_title(title):
         for keyword in TARGET_TITLES
     )
 
+def is_us_location(location):
+    """
+    Check if job location is in the United States
+    """
+
+    if not location:
+        return False
+
+    location = location.upper()
+
+    return any(
+        keyword.upper() in location
+        for keyword in US_LOCATION_KEYWORDS
+    )
 
 def get_jobs():
     """
@@ -79,6 +99,10 @@ def get_jobs():
 
             # Only matching software roles
             if not is_matching_title(title):
+                continue
+
+            # Only United States jobs
+            if not is_us_location(job.get("locationsText")):
                 continue
 
 

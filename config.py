@@ -6,6 +6,12 @@ JOB_TITLES = [
     "staff software engineer"
 ]
 
+US_LOCATION_KEYWORDS = [
+    "US",
+    "United States",
+    "USA"
+]
+
 import os
 
 EMAIL_FROM = os.environ.get("EMAIL_FROM")

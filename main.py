@@ -1,7 +1,8 @@
 import json
 import os
-from notifier.email import send_email
+
 from companies.visa import get_jobs
+from notifier.email import send_email
 
 
 SEEN_JOBS_FILE = "storage/seen_jobs.json"
@@ -9,96 +10,93 @@ SEEN_JOBS_FILE = "storage/seen_jobs.json"
 
 def load_seen_jobs():
     """
-    Load previously notified job IDs
+    Load previously notified job IDs.
     """
 
     if not os.path.exists(SEEN_JOBS_FILE):
         return []
 
-    with open(SEEN_JOBS_FILE, "r") as file:
-        return json.load(file)
+    try:
+        with open(SEEN_JOBS_FILE, "r") as file:
+            content = file.read().strip()
 
+            if not content:
+                return []
+
+            return json.loads(content)
+
+    except json.JSONDecodeError:
+        print("Warning: seen_jobs.json is invalid. Starting with empty history.")
+        return []
 
 
 def save_seen_jobs(job_ids):
     """
-    Save notified job IDs
+    Save notified job IDs.
     """
 
-    with open(SEEN_JOBS_FILE, "w") as file:
-        json.dump(
-            job_ids,
-            file,
-            indent=4
-        )
+    os.makedirs(os.path.dirname(SEEN_JOBS_FILE), exist_ok=True)
 
+    with open(SEEN_JOBS_FILE, "w") as file:
+        json.dump(job_ids, file, indent=4)
 
 
 def get_new_jobs(jobs):
     """
-    Remove jobs already notified
+    Return only jobs that have not been notified before.
     """
 
-    seen_jobs = load_seen_jobs()
+    seen_jobs = set(load_seen_jobs())
 
-    new_jobs = []
-
-    for job in jobs:
-
-        if job["id"] not in seen_jobs:
-            new_jobs.append(job)
-
+    new_jobs = [
+        job for job in jobs
+        if job["id"] not in seen_jobs
+    ]
 
     return new_jobs
-
 
 
 def main():
 
     print("Checking Visa jobs...")
 
-
     jobs = get_jobs()
 
-
-    print(
-        f"Found {len(jobs)} matching jobs"
-    )
-
+    print(f"Found {len(jobs)} matching jobs")
 
     new_jobs = get_new_jobs(jobs)
 
+    print(f"New jobs: {len(new_jobs)}")
 
-    print(
-        f"New jobs: {len(new_jobs)}"
-    )
+    if not new_jobs:
+        print("No new jobs")
+        return
 
+    print("\nNew Jobs Found:\n")
 
-    if new_jobs:
+    for job in new_jobs:
+        print("----------------")
+        print("ID:", job["id"])
+        print("Title:", job["title"])
+        print("Location:", job["location"])
+        print("Posted:", job["posted"])
+        print("URL:", job["url"])
 
-        print("\nNew Jobs Found:\n")
+    # Send email first.
+    # If email fails, seen_jobs.json will NOT be updated.
+    send_email(new_jobs)
 
-        send_email(new_jobs)
+    # Only mark jobs as seen after email succeeds.
+    seen_jobs = load_seen_jobs()
 
-        seen_jobs = load_seen_jobs()
-
-        for job in new_jobs:
-
-            print("----------------")
-            print(job["title"])
-            print(job["location"])
-            print(job["url"])
-
-
+    for job in new_jobs:
+        if job["id"] not in seen_jobs:
             seen_jobs.append(job["id"])
 
+    save_seen_jobs(seen_jobs)
 
-        save_seen_jobs(seen_jobs)
-
-
-    else:
-
-        print("No new jobs")
+    print(f"\nSaved {len(new_jobs)} job(s) to {SEEN_JOBS_FILE}")
+    print("Email sent successfully!")
 
 
 if __name__ == "__main__":
