@@ -93,9 +93,10 @@ def main():
         if job["id"] not in seen_jobs:
             seen_jobs.append(job["id"])
 
+    # Save the updated list.
     save_seen_jobs(seen_jobs)
 
-    print(f"\nSaved {len(new_jobs)} job(s) to {SEEN_JOBS_FILE}")
+    print(f"Saved {len(new_jobs)} new job(s) to {SEEN_JOBS_FILE}")
     print("Email sent successfully!")
 
 
