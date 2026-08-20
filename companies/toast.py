@@ -1,7 +1,23 @@
+import re
 import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 
+from datetime import date
+from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 "
+        "(Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 "
+        "(KHTML, like Gecko) "
+        "Chrome/151.0.0.0 Safari/537.36"
+    ),
+    "Accept": (
+        "text/html,application/xhtml+xml,"
+        "application/xml;q=0.9,*/*;q=0.8"
+    ),
+}
 
 TOAST_SEARCH_URL = (
     "https://careers.toasttab.com/jobs/search"
@@ -44,7 +60,44 @@ def is_matching_title(title):
         for target in TARGET_TITLES
     )
 
+def get_posted_date(url):
+    """
+    Get the exact posting date from the Toast job page.
 
+    Toast exposes the date in JSON/HTML like:
+
+    "datePosted":"2026-03-20T22:26:11Z"
+    """
+
+    try:
+
+        response = requests.get(
+            url,
+            headers=HEADERS,
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        match = re.search(
+            r'"datePosted"\s*:\s*"([^"]+)"',
+            response.text
+        )
+
+        if match:
+            return match.group(1)[:10]
+
+        return "Unknown"
+
+    except requests.RequestException as error:
+
+        print(
+            f"Warning: Could not get posting date "
+            f"for {url}: {error}"
+        )
+
+        return "Unknown"
+    
 def get_jobs():
 
     headers = {
@@ -99,12 +152,17 @@ def get_jobs():
             href
         )
 
+        posted = get_posted_date(url)
+
+        if posted != date.today().isoformat():
+            continue
+
         jobs.append({
             "company": "Toast",
             "id": url,
             "title": title,
             "location": "United States",
-            "posted": "Unknown",
+            "posted": posted,
             "remote": None,
             "url": url
         })
