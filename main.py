@@ -3,6 +3,7 @@ import os
 
 from companies.visa import get_jobs as get_visa_jobs
 from companies.toast import get_jobs as get_toast_jobs
+from companies.mastercard import get_jobs as get_mastercard_jobs
 from notifier.email import send_email
 
 
@@ -95,12 +96,27 @@ def main():
         f"Found {len(toast_jobs)} matching Toast jobs"
     )
 
+    # --------------------------------
+    # MASTERCARD
+    # --------------------------------
+
+    print("\nChecking Mastercard jobs...")
+
+    mastercard_jobs = get_mastercard_jobs()
+
+    print(
+        f"Found {len(mastercard_jobs)} matching Mastercard jobs"
+    )
 
     # --------------------------------
     # COMBINE JOBS
     # --------------------------------
 
-    jobs = visa_jobs + toast_jobs
+    jobs = (
+    visa_jobs
+    + toast_jobs
+    + mastercard_jobs
+)
 
     print(
         f"\nFound {len(jobs)} matching jobs in total"
