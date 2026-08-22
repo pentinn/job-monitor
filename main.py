@@ -4,6 +4,7 @@ import os
 from companies.visa import get_jobs as get_visa_jobs
 from companies.toast import get_jobs as get_toast_jobs
 from companies.mastercard import get_jobs as get_mastercard_jobs
+from companies.fedex import get_jobs as get_fedex_jobs
 from notifier.email import send_email
 
 
@@ -71,57 +72,45 @@ def get_new_jobs(jobs):
 
 def main():
 
-    # --------------------------------
-    # VISA
-    # --------------------------------
-
     print("Checking Visa jobs...")
 
     visa_jobs = get_visa_jobs()
 
-    print(
-        f"Found {len(visa_jobs)} matching Visa jobs"
-    )
+    print(f"Found {len(visa_jobs)} matching Visa jobs")
 
-
-    # --------------------------------
-    # TOAST
-    # --------------------------------
 
     print("\nChecking Toast jobs...")
 
     toast_jobs = get_toast_jobs()
 
-    print(
-        f"Found {len(toast_jobs)} matching Toast jobs"
-    )
+    print(f"Found {len(toast_jobs)} matching Toast jobs")
 
-    # --------------------------------
-    # MASTERCARD
-    # --------------------------------
 
     print("\nChecking Mastercard jobs...")
 
     mastercard_jobs = get_mastercard_jobs()
 
-    print(
-        f"Found {len(mastercard_jobs)} matching Mastercard jobs"
-    )
+    print(f"Found {len(mastercard_jobs)} matching Mastercard jobs")
 
-    # --------------------------------
-    # COMBINE JOBS
-    # --------------------------------
 
+    print("\nChecking FedEx jobs...")
+
+    fedex_jobs = get_fedex_jobs()
+
+    print(f"Found {len(fedex_jobs)} matching FedEx jobs")
+
+
+    # Combine all company jobs
     jobs = (
-    visa_jobs
-    + toast_jobs
-    + mastercard_jobs
-)
+        visa_jobs
+        + toast_jobs
+        + mastercard_jobs
+        + fedex_jobs
+    )
 
     print(
         f"\nFound {len(jobs)} matching jobs in total"
     )
-
 
     # --------------------------------
     # FIND NEW JOBS

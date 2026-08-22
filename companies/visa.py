@@ -14,6 +14,16 @@ TARGET_TITLES = [
     "sde"
 ]
 
+EXCLUDED_TITLE_KEYWORDS = [
+    "director",
+    "senior director",
+    "managing director",
+    "chief",
+    "vp",
+    "vice president",
+    "manager"
+]
+
 US_LOCATION_KEYWORDS = [
     "US",
     "United States",
@@ -27,6 +37,12 @@ def is_matching_title(title):
     """
 
     title = title.lower()
+
+    if any(
+        keyword in title
+        for keyword in EXCLUDED_TITLE_KEYWORDS
+    ):
+        return False
 
     return any(
         keyword in title
@@ -47,6 +63,7 @@ def is_us_location(location):
         keyword.upper() in location
         for keyword in US_LOCATION_KEYWORDS
     )
+
 
 def get_jobs():
     """
@@ -92,16 +109,14 @@ def get_jobs():
             posted = job.get("postedOn", "")
 
 
-            # Only jobs posted today
             if posted != "Posted Today":
                 continue
 
 
-            # Only matching software roles
             if not is_matching_title(title):
                 continue
 
-            # Only United States jobs
+
             if not is_us_location(job.get("locationsText")):
                 continue
 
@@ -141,7 +156,6 @@ def get_jobs():
 
 
     return all_jobs
-
 
 
 if __name__ == "__main__":
