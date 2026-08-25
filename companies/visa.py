@@ -21,7 +21,8 @@ EXCLUDED_TITLE_KEYWORDS = [
     "chief",
     "vp",
     "vice president",
-    "manager"
+    "manager",
+    "lead"
 ]
 
 US_LOCATION_KEYWORDS = [
