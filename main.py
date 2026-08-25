@@ -5,6 +5,7 @@ from companies.visa import get_jobs as get_visa_jobs
 from companies.toast import get_jobs as get_toast_jobs
 from companies.mastercard import get_jobs as get_mastercard_jobs
 from companies.fedex import get_jobs as get_fedex_jobs
+from companies.uline import get_jobs as get_uline_jobs
 from notifier.email import send_email
 
 
@@ -99,6 +100,12 @@ def main():
 
     print(f"Found {len(fedex_jobs)} matching FedEx jobs")
 
+    print("\nChecking Uline jobs...")
+
+    uline_jobs = get_uline_jobs()
+
+    print(f"Found {len(uline_jobs)} matching Uline jobs")
+
 
     # Combine all company jobs
     jobs = (
@@ -106,6 +113,7 @@ def main():
         + toast_jobs
         + mastercard_jobs
         + fedex_jobs
+        + uline_jobs
     )
 
     print(
