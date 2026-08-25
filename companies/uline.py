@@ -97,7 +97,9 @@ def get_jobs():
         timeout=30
     )
 
-    response.raise_for_status()
+    if response.status_code != 200:
+        print(f"Uline request failed with status {response.status_code}")
+        return []
 
     match = re.search(
         r"var existingJobResults = (\[.*?\]);",
