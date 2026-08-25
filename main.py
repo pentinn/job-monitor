@@ -70,12 +70,18 @@ def get_new_jobs(jobs):
 
     return new_jobs
 
+def safe_get_jobs(company, get_jobs):
+    try:
+        return get_jobs()
+    except Exception as e:
+        print(f"Error checking {company}: {e}")
+        return []
 
 def main():
 
     print("Checking Visa jobs...")
 
-    visa_jobs = get_visa_jobs()
+    visa_jobs = safe_get_jobs("Visa", get_visa_jobs)
 
     print(f"Found {len(visa_jobs)} matching Visa jobs")
 
