@@ -6,6 +6,7 @@ from companies.toast import get_jobs as get_toast_jobs
 from companies.mastercard import get_jobs as get_mastercard_jobs
 from companies.fedex import get_jobs as get_fedex_jobs
 from companies.uline import get_jobs as get_uline_jobs
+from companies.usbank import get_jobs as get_usbank_jobs
 from notifier.email import send_email
 
 
@@ -80,37 +81,28 @@ def safe_get_jobs(company, get_jobs):
 def main():
 
     print("Checking Visa jobs...")
-
     visa_jobs = safe_get_jobs("Visa", get_visa_jobs)
-
     print(f"Found {len(visa_jobs)} matching Visa jobs")
 
-
     print("\nChecking Toast jobs...")
-
-    toast_jobs = get_toast_jobs()
-
+    toast_jobs = safe_get_jobs("Toast", get_toast_jobs)
     print(f"Found {len(toast_jobs)} matching Toast jobs")
 
-
     print("\nChecking Mastercard jobs...")
-
-    mastercard_jobs = get_mastercard_jobs()
-
+    mastercard_jobs = safe_get_jobs("Mastercard", get_mastercard_jobs)
     print(f"Found {len(mastercard_jobs)} matching Mastercard jobs")
 
-
     print("\nChecking FedEx jobs...")
-
-    fedex_jobs = get_fedex_jobs()
-
+    fedex_jobs = safe_get_jobs("FedEx", get_fedex_jobs)
     print(f"Found {len(fedex_jobs)} matching FedEx jobs")
 
     print("\nChecking Uline jobs...")
-
-    uline_jobs = get_uline_jobs()
-
+    uline_jobs = safe_get_jobs("Uline", get_uline_jobs)
     print(f"Found {len(uline_jobs)} matching Uline jobs")
+
+    print("\nChecking U.S. Bank jobs...")
+    usbank_jobs = safe_get_jobs("U.S. Bank", get_usbank_jobs)
+    print(f"Found {len(usbank_jobs)} matching U.S. Bank jobs")
 
 
     # Combine all company jobs
@@ -120,6 +112,7 @@ def main():
         + mastercard_jobs
         + fedex_jobs
         + uline_jobs
+        + usbank_jobs
     )
 
     print(
