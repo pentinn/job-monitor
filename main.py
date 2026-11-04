@@ -6,7 +6,7 @@ from companies.toast import get_jobs as get_toast_jobs
 from companies.mastercard import get_jobs as get_mastercard_jobs
 from companies.fedex import get_jobs as get_fedex_jobs
 from companies.uline import get_jobs as get_uline_jobs
-from companies.usbank import get_jobs as get_usbank_jobs
+# from companies.usbank import get_jobs as get_usbank_jobs
 from notifier.email import send_email
 
 
@@ -100,9 +100,9 @@ def main():
     uline_jobs = safe_get_jobs("Uline", get_uline_jobs)
     print(f"Found {len(uline_jobs)} matching Uline jobs")
 
-    print("\nChecking U.S. Bank jobs...")
-    usbank_jobs = safe_get_jobs("U.S. Bank", get_usbank_jobs)
-    print(f"Found {len(usbank_jobs)} matching U.S. Bank jobs")
+    # print("\nChecking U.S. Bank jobs...")
+    # usbank_jobs = safe_get_jobs("U.S. Bank", get_usbank_jobs)
+    # print(f"Found {len(usbank_jobs)} matching U.S. Bank jobs")
 
 
     # Combine all company jobs
@@ -112,7 +112,7 @@ def main():
         + mastercard_jobs
         + fedex_jobs
         + uline_jobs
-        + usbank_jobs
+        # + usbank_jobs
     )
 
     print(
